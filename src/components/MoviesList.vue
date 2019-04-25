@@ -1,13 +1,11 @@
 <template>
-  <div class="home">
-    <movie-card msg="Movies" />
+  <div class="list">
+    <movie-card></movie-card>
   </div>
 </template>
-
 <script>
-// @ is an alias to /src
 export default {
-  name: "Home",
+  name: "MoviesList",
   components: {
     "movie-card": () => import("@/components/MovieCard.vue")
   }
