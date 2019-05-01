@@ -23,11 +23,9 @@
         </div>
       </div>
     </form>
-    <button type="button" class="btn btn-primary" @click="searchHandler()">
+    <button type="button" class="btn btn-primary" @click="getSearchQuery">
       Show
     </button>
-
-    <pre>{{ moviesResultArr }}</pre>
   </div>
 </template>
 <script>
@@ -35,8 +33,8 @@ import axios from "@/main-axios.js";
 
 export default {
   name: "MoviesFilter",
+  props: ["getSearchId"],
   data: () => ({
-    moviesResultArr: [],
     genresList: [],
     searchId: []
   }),
@@ -44,18 +42,6 @@ export default {
     this.getGenresList();
   },
   methods: {
-    searchHandler() {
-      axios
-        .get("/discover/movie", {
-          params: {
-            with_genres: this.searchId.toString()
-          }
-        })
-        .then(response => {
-          this.moviesResultArr = response.data;
-        })
-        .catch(error => console.error(error));
-    },
     getGenresList() {
       axios
         .get("/genre/movie/list")
@@ -63,6 +49,11 @@ export default {
           this.genresList = response.data.genres;
         })
         .catch(error => console.error(error));
+    },
+    getSearchQuery() {
+      this.getSearchId({
+        searchId: this.searchId
+      });
     }
   }
 };
@@ -70,5 +61,17 @@ export default {
 <style>
 .search-title {
   margin-bottom: 30px;
+}
+
+.filter {
+  margin-bottom: 50px;
+  color: white;
+  background-color: #454d55;
+  padding: 50px;
+  font-size: 1.3rem;
+}
+
+.form-check-input {
+  zoom: 1.5;
 }
 </style>
