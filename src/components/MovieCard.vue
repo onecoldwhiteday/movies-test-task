@@ -16,17 +16,9 @@
       </td>
     </tr>
     <tr>
-      <th></th>
-      <td>
-        <p>
-          {{ movieData.tagline }}
-        </p>
-      </td>
+      <th>Genre</th>
+      <td>{{ getGenres }}</td>
     </tr>
-    <!-- <tr>
-        <th>Genre</th>
-        <td>{{ getGenres }}</td>
-      </tr> -->
     <tr>
       <th>Year</th>
       <td>{{ movieData.release_date }}</td>
@@ -65,7 +57,7 @@ export default {
   }),
   computed: {
     getGenres() {
-      return this.movieData.genres.name;
+      return this.movieData.genre_ids.toString();
     }
   }
 };
