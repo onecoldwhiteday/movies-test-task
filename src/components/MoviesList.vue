@@ -1,17 +1,16 @@
 <template>
   <div>
     <div class="movies-list">
-      <!-- <template v-if="this.moviesResult.results.length > 0"> -->
-      <movie-card
-        v-for="movie in moviesResultArr"
-        :key="movie.id"
-        :movie-data="movie"
-      ></movie-card>
-
-      <!-- </template> -->
-      <!-- <template v-else> -->
-      <!-- <p class="h3">No results for your query</p> -->
-      <!-- </template> -->
+      <template v-if="this.moviesResult.results.length > 0">
+        <movie-card
+          v-for="movie in moviesResultArr"
+          :key="movie.id"
+          :movie-data="movie"
+        ></movie-card>
+      </template>
+      <template v-else>
+        <p class="h3">No results, try other genres</p>
+      </template>
     </div>
   </div>
 </template>

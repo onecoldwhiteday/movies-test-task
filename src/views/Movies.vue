@@ -5,6 +5,9 @@
     <p class="h4">
       Total results: <span class="num">{{ moviesResult.total_results }}</span>
     </p>
+    <p class="h4">
+      Total pages: <span class="num">{{ moviesResult.total_pages }}</span>
+    </p>
     <movies-list :movies-result="moviesResult"></movies-list>
 
     <nav class="pagination-block">
@@ -18,7 +21,7 @@
             Previous
           </button>
         </li>
-        <template v-if="totalPages < 50">
+        <template v-if="totalPages < 70">
           <li
             v-for="page in totalPages"
             :class="page == currentPage ? ' page-item active' : 'page-item'"
