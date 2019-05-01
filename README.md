@@ -7,7 +7,7 @@
 ```
 yarn global add @vue/cli
 ```
-### And with npm:
+### Or with npm:
 ```
 npm install -g @vue/cli
 ```
