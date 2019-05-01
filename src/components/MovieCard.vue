@@ -9,10 +9,15 @@
       <td>
         <img
           :src="
-            imgBaseSrc + movieData.poster_path || '@/assets/default-poster.jpg'
+            movieData.poster_path.length > 0
+              ? imgBaseSrc + movieData.poster_path
+              : '@/assets/default-poster.jpg'
           "
+          width="300px"
+          height="450px"
           alt="poster"
         />
+        <!-- -->
       </td>
     </tr>
     <tr>
@@ -62,3 +67,8 @@ export default {
   }
 };
 </script>
+<style>
+.movie-card {
+  height: 100%;
+}
+</style>

@@ -37,6 +37,8 @@ export default {
 .movies-list {
   display: grid;
   grid-template-columns: repeat(3, 2fr);
+  grid-template-rows: repeat(7, 2fr);
   grid-column-gap: 30px;
+  grid-row-gap: 30px;
 }
 </style>
