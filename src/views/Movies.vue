@@ -6,7 +6,10 @@
         <ul class="navbar-nav mr-auto navbar">
           <li
             class="nav-item"
-            @click="resultHandler(url, 1, 'sort_by', 'popularity.desc')"
+            @click="
+              updateQueries('discover/movie', 'popularity.desc'),
+                resultHandler()
+            "
           >
             <a class="nav-link">
               Popular
@@ -14,18 +17,27 @@
           </li>
           <li
             class="nav-item"
-            @click="resultHandler(url, 1, 'sort_by', 'vote_average.desc')"
+            @click="
+              updateQueries('discover/movie', 'vote_average.desc'),
+                resultHandler()
+            "
           >
             <a class="nav-link">
               Top Rated
             </a>
           </li>
-          <li class="nav-item" @click="resultHandler('/movie/upcoming', 1)">
+          <li
+            class="nav-item"
+            @click="updateQueries('movie/upcoming'), resultHandler()"
+          >
             <a class="nav-link">
               Upcoming
             </a>
           </li>
-          <li class="nav-item" @click="resultHandler('/movie/now_playing', 1)">
+          <li
+            class="nav-item"
+            @click="updateQueries('movie/now_playing'), resultHandler()"
+          >
             <a class="nav-link">
               Now Playing
             </a>
@@ -58,7 +70,7 @@
           <button
             type="button"
             class="page-link"
-            @click="resultHandler(url, goPrev)"
+            @click="resultHandler(goPrev)"
           >
             Previous
           </button>
@@ -72,7 +84,7 @@
             <button
               type="button"
               class="page-link"
-              @click="resultHandler(url, page)"
+              @click="resultHandler(page)"
             >
               {{ page }}
             </button>
@@ -82,7 +94,7 @@
           <button
             type="button"
             class="page-link"
-            @click="resultHandler(url, goNext)"
+            @click="resultHandler(goNext)"
           >
             Next
           </button>
@@ -106,7 +118,10 @@ export default {
   data: () => ({
     moviesResult: {},
     searchId: [],
-    url: "/discover/movie"
+    searchQueries: {
+      searchUrl: "discover/movie",
+      sort_by: ""
+    }
   }),
   computed: {
     currentPage() {
@@ -129,13 +144,13 @@ export default {
     }
   },
   methods: {
-    resultHandler(url, page, query, category) {
+    resultHandler(page) {
       axios
-        .get(url, {
+        .get(this.searchQueries.searchUrl, {
           params: {
             with_genres: this.searchId.toString(),
-            page: page,
-            [query]: category
+            sort_by: this.searchQueries.sort_by,
+            page: page
           }
         })
         .then(response => {
@@ -143,22 +158,6 @@ export default {
         })
         .catch(error => console.error(error));
     },
-    // getUpcoming() {
-    //   axios
-    //     .get("/movie/upcoming")
-    //     .then(response => {
-    //       this.moviesResult = response.data;
-    //     })
-    //     .catch(error => console.error(error));
-    // },
-    // getNowPlaying() {
-    //     axios
-    //     .get("/movie/now_playing")
-    //     .then(response => {
-    //       this.moviesResult = response.data;
-    //     })
-    //     .catch(error => console.error(error));
-    // },
     getSearchId(id) {
       this.searchId = id.searchId;
       this.resultHandler();
@@ -168,6 +167,10 @@ export default {
       filter.classList.contains("hide-me")
         ? filter.classList.remove("hide-me")
         : filter.classList.add("hide-me");
+    },
+    updateQueries(searchUrl, sort_by) {
+      this.searchQueries.searchUrl = searchUrl;
+      this.searchQueries.sort_by = sort_by;
     }
   }
 };
