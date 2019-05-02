@@ -227,4 +227,7 @@ export default {
   opacity: 1;
   text-decoration: none;
 }
+.nav-item {
+  cursor: pointer;
+}
 </style>

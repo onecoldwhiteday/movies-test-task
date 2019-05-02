@@ -36,13 +36,16 @@
         <p class="section-title">Budget:</p>
         <p>${{ movieData.budget }}</p>
 
+        <p class="section-title">Countries:</p>
+        <p>{{ parseCountries }}</p>
+
         <p class="section-title">Director</p>
         <img
-          :src="imgBaseSrc + 'w45' + credits.crew[0].profile_path"
-          width="64"
+          :src="imgBaseSrc + 'w185' + credits.crew[0].profile_path"
           :alt="credits.crew[0].name"
+          onerror="this.style.display='none'"
         />
-        <p>{{ this.credits.crew[0].name }}</p>
+        <p class="role">{{ this.credits.crew[0].name }}</p>
 
         <p class="section-title">Official website:</p>
         <a :href="movieData.homepage" target="_blank">{{
@@ -66,8 +69,14 @@
             :key="actor.cast_id"
           >
             <img
-              :src="imgBaseSrc + 'w185' + actor.profile_path"
+              :src="
+                actor.profile_path === null
+                  ? defActor
+                  : imgBaseSrc + 'w185' + actor.profile_path
+              "
               :alt="actor.name"
+              width="185"
+              height="278"
             />
             <p class="role">{{ actor.character }}</p>
             <p>{{ actor.name }}</p>
@@ -85,7 +94,8 @@ export default {
   data: () => ({
     movieData: {},
     imgBaseSrc: "https://image.tmdb.org/t/p/",
-    credits: null
+    credits: null,
+    defActor: "../default-actor.png"
   }),
   computed: {
     movieId() {
@@ -101,6 +111,13 @@ export default {
         genres.push(genre.name);
       });
       return genres.toString();
+    },
+    parseCountries() {
+      let countries = [];
+      this.movieData.production_countries.forEach(country => {
+        countries.push(country.name);
+      });
+      return countries.toString();
     }
   },
   mounted() {
@@ -164,6 +181,7 @@ export default {
 .section-title {
   font-size: 1.2rem;
   font-weight: bold;
+  margin-top: 10px;
 }
 .company-logo {
   margin-top: 15px;
@@ -184,7 +202,7 @@ export default {
   background-color: rgba(255, 255, 255, 0.3);
   border-radius: 5px;
   margin-top: 10px;
-  margin-bottom: 50px;
+  margin-bottom: 100px;
   padding: 10px;
 }
 </style>
