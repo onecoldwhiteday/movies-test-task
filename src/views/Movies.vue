@@ -26,6 +26,11 @@
               Top Rated
             </a>
           </li>
+          <li class="nav-item filter-button">
+            <button type="button" class="btn btn-primary" @click="filterView">
+              Filter &#9660;
+            </button>
+          </li>
           <li
             class="nav-item"
             @click="updateQueries('movie/upcoming'), resultHandler()"
@@ -42,16 +47,13 @@
               Now Playing
             </a>
           </li>
-
-          <li class="nav-item filter-button">
-            <button type="button" class="btn btn-primary" @click="filterView">
-              Filter &#9660;
-            </button>
-          </li>
         </ul>
       </div>
     </nav>
-    <movies-filter :get-search-id="getSearchId"></movies-filter>
+    <movies-filter
+      :get-search-id="getSearchId"
+      :adult-free="adultFree"
+    ></movies-filter>
     <div class="results-info">
       <p>
         Total results: <span class="num">{{ moviesResult.total_results }}</span>
@@ -118,10 +120,11 @@ export default {
   },
   data: () => ({
     moviesResult: {},
-    searchId: [],
     searchQueries: {
       searchUrl: "discover/movie",
-      sort_by: ""
+      sort_by: "",
+      searchId: [],
+      adultFree: null
     }
   }),
   computed: {
@@ -152,9 +155,10 @@ export default {
       axios
         .get(this.searchQueries.searchUrl, {
           params: {
-            with_genres: this.searchId.toString(),
+            with_genres: this.searchQueries.searchId.toString(),
             sort_by: this.searchQueries.sort_by,
-            page: page
+            page: page,
+            include_adult: !this.searchQueries.adultFree
           }
         })
         .then(response => {
@@ -163,8 +167,12 @@ export default {
         .catch(error => console.error(error));
     },
     getSearchId(id) {
-      this.searchId = id.searchId;
+      this.searchQueries.searchId = id.searchId;
       this.resultHandler();
+      return this.searchQueries.searchId;
+    },
+    adultFree(adultFree) {
+      this.searchQueries.adultFree = adultFree.adultFree;
     },
     filterView() {
       let filter = document.querySelector(".filter");

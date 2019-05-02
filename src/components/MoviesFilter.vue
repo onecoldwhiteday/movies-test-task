@@ -1,8 +1,15 @@
 <template>
   <div class="filter hide-me">
     <form>
-      <!-- <p class="h4 search-title">Choose genres to show:</p> -->
       <p>Filter(genre)</p>
+
+      <!-- WARNING!
+      filter works only with SORTED by popularity and top rated movies
+
+      Upcoming and Now Playing ones we get from DIFFERENT url and genres query doesn't work with it
+
+       -->
+
       <div class="form-group row" aria-required="true">
         <div
           v-for="genre in genresList"
@@ -23,6 +30,22 @@
         </div>
       </div>
     </form>
+    <form>
+      <p>Parent control:</p>
+      <div class="form-group column">
+        <div>
+          <label for="parentControl" class="form-check-label"
+            >Don't show adult movies</label
+          >
+          <input
+            type="checkbox"
+            id="parentControl"
+            class="form-check-input col-sm-1"
+            @change="handleCheck"
+          />
+        </div>
+      </div>
+    </form>
     <button type="button" class="btn btn-primary" @click="getSearchQuery">
       Show
     </button>
@@ -33,7 +56,7 @@ import axios from "@/main-axios.js";
 
 export default {
   name: "MoviesFilter",
-  props: ["getSearchId"],
+  props: ["getSearchId", "adultFree"],
   data: () => ({
     genresList: [],
     searchId: []
@@ -53,6 +76,13 @@ export default {
     getSearchQuery() {
       this.getSearchId({
         searchId: this.searchId
+      });
+    },
+    handleCheck() {
+      this.adultFree({
+        adultFree: document.getElementById("parentControl").checked
+          ? true
+          : false
       });
     }
   }
