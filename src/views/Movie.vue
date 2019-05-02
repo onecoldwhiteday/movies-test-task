@@ -10,13 +10,17 @@
           ')'
       "
     >
-      <div class="poster">
-        <img :src="imgBaseSrc + 'w500' + movieData.poster_path" alt="poster" />
-      </div>
       <div class="main-info">
         <h2 class="movie-title">
           {{ movieData.original_title }} ({{ parseYear }})
         </h2>
+
+        <div class="poster">
+          <img
+            :src="imgBaseSrc + 'w500' + movieData.poster_path"
+            alt="poster"
+          />
+        </div>
 
         <p class="section-title">Rating:</p>
         <span class="rating">{{ movieData.vote_average }}</span>
@@ -32,13 +36,45 @@
         <p class="section-title">Budget:</p>
         <p>${{ movieData.budget }}</p>
 
+        <p class="section-title">Director</p>
+        <img
+          :src="imgBaseSrc + 'w45' + credits.crew[0].profile_path"
+          width="64"
+          :alt="credits.crew[0].name"
+        />
+        <p>{{ this.credits.crew[0].name }}</p>
+
         <p class="section-title">Official website:</p>
         <a :href="movieData.homepage" target="_blank">{{
-          movieData.homepage
+          movieData.homepage || "No website :("
         }}</a>
+        <p class="company_logos">
+          <img
+            :src="renderCompanyLogo(company)"
+            v-for="company in movieData.production_companies"
+            :key="company"
+            alt="company"
+            class="company-logo"
+            onerror="this.style.display='none'"
+            width="64"
+          />
+        </p>
+        <div class="top-cast">
+          <div
+            class="cast-card"
+            v-for="actor in this.credits.cast.slice(0, 5)"
+            :key="actor.cast_id"
+          >
+            <img
+              :src="imgBaseSrc + 'w185' + actor.profile_path"
+              :alt="actor.name"
+            />
+            <p class="role">{{ actor.character }}</p>
+            <p>{{ actor.name }}</p>
+          </div>
+        </div>
       </div>
     </div>
-    <pre>{{ movieData }}</pre>
   </div>
 </template>
 <script>
@@ -48,7 +84,8 @@ export default {
   name: "Movie",
   data: () => ({
     movieData: {},
-    imgBaseSrc: "https://image.tmdb.org/t/p/"
+    imgBaseSrc: "https://image.tmdb.org/t/p/",
+    credits: null
   }),
   computed: {
     movieId() {
@@ -68,6 +105,7 @@ export default {
   },
   mounted() {
     this.getMovie();
+    this.getCredits();
   },
   methods: {
     getMovie() {
@@ -77,6 +115,21 @@ export default {
           this.movieData = response.data;
         })
         .catch(error => console.error(error));
+    },
+    renderCompanyLogo(company) {
+      return this.imgBaseSrc + "w300" + company.logo_path;
+    },
+    getCredits() {
+      axios
+        .get("movie/" + this.movieId + "/credits", {
+          params: {
+            append_to_response: "credits"
+          }
+        })
+        .then(response => {
+          this.credits = response.data;
+        })
+        .catch(error => console.error(error));
     }
   }
 };
@@ -84,15 +137,20 @@ export default {
 <style>
 .movie-info {
   display: flex;
-  backdrop-filter: blur(8px);
   color: white;
 }
 .main-info {
+  width: 80%;
   display: flex;
   flex-direction: column;
   align-items: flex-start;
   padding: 50px;
   background-color: rgba(0, 0, 0, 0.7);
+  margin: 0 auto;
+}
+.poster {
+  position: absolute;
+  align-self: flex-end;
 }
 .rating {
   font-size: 2.5rem;
@@ -106,5 +164,27 @@ export default {
 .section-title {
   font-size: 1.2rem;
   font-weight: bold;
+}
+.company-logo {
+  margin-top: 15px;
+  margin-right: 20px;
+}
+.top-cast {
+  display: flex;
+  justify-content: space-around;
+  width: 80%;
+}
+.role {
+  text-decoration: underline;
+  margin-top: 10px;
+  margin-bottom: 0;
+  font-weight: bold;
+}
+.company_logos {
+  background-color: rgba(255, 255, 255, 0.3);
+  border-radius: 5px;
+  margin-top: 10px;
+  margin-bottom: 50px;
+  padding: 10px;
 }
 </style>
