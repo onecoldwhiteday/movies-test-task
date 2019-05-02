@@ -59,7 +59,7 @@
             alt="company"
             class="company-logo"
             onerror="this.style.display='none'"
-            width="64"
+            width="128"
           />
         </p>
         <div class="top-cast">

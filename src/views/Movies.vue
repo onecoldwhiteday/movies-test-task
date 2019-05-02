@@ -2,7 +2,7 @@
   <div class="movies">
     <nav class="navbar navbar-expand-md navbar-dark fixed-top bg-dark">
       <div id="navbarCollapse" class="collapse navbar-collapse">
-        <h2 class="h1 main-title">Movies</h2>
+        <a href="/" class="h1 main-title">Movies</a>
         <ul class="navbar-nav mr-auto navbar">
           <li
             class="nav-item"
@@ -196,6 +196,11 @@ export default {
 
 .main-title {
   padding: 30px;
+  color: white;
+  cursor: pointer;
+}
+.main-title:hover {
+  text-decoration: none;
   color: white;
 }
 .filter-button {
