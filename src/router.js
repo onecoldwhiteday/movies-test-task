@@ -11,6 +11,11 @@ export default new Router({
       path: "/",
       name: "Movies",
       component: () => import("@/views/Movies.vue")
+    },
+    {
+      path: "/movie/:id",
+      name: "Movie",
+      component: () => import("@/views/Movie.vue")
     }
   ]
 });

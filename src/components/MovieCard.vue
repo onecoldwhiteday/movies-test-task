@@ -1,51 +1,42 @@
 <template>
-  <table class="table table-dark movie-card">
-    <tr>
-      <th>Title</th>
-      <td>{{ movieData.original_title }}</td>
-    </tr>
-    <tr>
-      <th>Poster</th>
-      <td>
-        <img
-          :src="
-            movieData.poster_path.length > 0
-              ? imgBaseSrc + movieData.poster_path
-              : '@/assets/default-poster.jpg'
-          "
-          width="300px"
-          height="450px"
-          alt="poster"
-        />
-        <!-- -->
-      </td>
-    </tr>
-    <tr>
-      <th>Genre</th>
-      <td>{{ getGenres }}</td>
-    </tr>
-    <tr>
-      <th>Year</th>
-      <td>{{ movieData.release_date }}</td>
-    </tr>
-    <tr>
-      <th>Overview</th>
-      <td>
-        <p>
-          {{ movieData.overview }}
-        </p>
-      </td>
-    </tr>
+  <div class="container movie-card">
+    <div class="poster">
+      <img
+        :src="
+          movieData.poster_path == null
+            ? defSrc
+            : imgBaseSrc + movieData.poster_path
+        "
+        width="300px"
+        height="450px"
+        alt="poster"
+      />
+    </div>
+    <div class="data">
+      <p class="title h4">
+        {{ movieData.original_title }}
+      </p>
+      <p class="date">
+        {{ parseDate }}
+      </p>
+      <p class="overview">
+        {{ movieData.overview }}
+      </p>
+      <p class="h2">
+        {{ movieData.vote_average }}
+      </p>
 
-    <tr>
-      <th>Rating</th>
-      <td>
-        <p class="h2">
-          {{ movieData.vote_average }}
-        </p>
-      </td>
-    </tr>
-  </table>
+      <p>Popularuty: {{ movieData.popularity }}</p>
+      <div class="link">
+        <router-link
+          :to="'/movie/' + movieData.id"
+          target="_blank"
+          class="btn btn-primary link"
+          >More Info</router-link
+        >
+      </div>
+    </div>
+  </div>
 </template>
 
 <script>
@@ -58,11 +49,15 @@ export default {
     }
   },
   data: () => ({
-    imgBaseSrc: "https://image.tmdb.org/t/p/w300"
+    imgBaseSrc: "https://image.tmdb.org/t/p/w300",
+    defSrc: "./default-poster.jpg"
   }),
   computed: {
-    getGenres() {
-      return this.movieData.genre_ids.toString();
+    parseDate() {
+      let year = this.movieData.release_date.slice(0, 4);
+      let month = this.movieData.release_date.slice(5, 7);
+      let day = this.movieData.release_date.slice(8, 10);
+      return day + "." + month + "." + year;
     }
   }
 };
@@ -70,5 +65,13 @@ export default {
 <style>
 .movie-card {
   height: 100%;
+  display: flex;
+}
+.data {
+  display: flex;
+  flex-direction: column;
+  padding: 20px;
+  justify-content: flex-start;
+  text-align: start;
 }
 </style>

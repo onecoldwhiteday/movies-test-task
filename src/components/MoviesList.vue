@@ -1,16 +1,11 @@
 <template>
   <div>
     <div class="movies-list">
-      <template v-if="this.moviesResult.results.length > 0">
-        <movie-card
-          v-for="movie in moviesResultArr"
-          :key="movie.id"
-          :movie-data="movie"
-        ></movie-card>
-      </template>
-      <template v-else>
-        <p class="h3">No results, try other genres</p>
-      </template>
+      <movie-card
+        v-for="movie in moviesResultArr"
+        :key="movie.id"
+        :movie-data="movie"
+      ></movie-card>
     </div>
   </div>
 </template>
@@ -37,7 +32,7 @@ export default {
 .movies-list {
   display: grid;
   grid-template-columns: repeat(3, 2fr);
-  grid-template-rows: repeat(7, 2fr);
+  /* grid-template-rows: repeat(7, 2fr); */
   grid-column-gap: 30px;
   grid-row-gap: 30px;
 }

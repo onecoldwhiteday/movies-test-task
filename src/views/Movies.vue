@@ -1,14 +1,56 @@
 <template>
   <div class="movies">
-    <h2 class="h1">Movies</h2>
+    <nav class="navbar navbar-expand-md navbar-dark fixed-top bg-dark">
+      <div id="navbarCollapse" class="collapse navbar-collapse">
+        <h2 class="h1 main-title">Movies</h2>
+        <ul class="navbar-nav mr-auto navbar">
+          <li
+            class="nav-item"
+            @click="resultHandler(url, 1, 'sort_by', 'popularity.desc')"
+          >
+            <a class="nav-link">
+              Popular
+            </a>
+          </li>
+          <li
+            class="nav-item"
+            @click="resultHandler(url, 1, 'sort_by', 'vote_average.desc')"
+          >
+            <a class="nav-link">
+              Top Rated
+            </a>
+          </li>
+          <li class="nav-item" @click="resultHandler('/movie/upcoming', 1)">
+            <a class="nav-link">
+              Upcoming
+            </a>
+          </li>
+          <li class="nav-item" @click="resultHandler('/movie/now_playing', 1)">
+            <a class="nav-link">
+              Now Playing
+            </a>
+          </li>
+
+          <li class="nav-item filter-button">
+            <button type="button" class="btn btn-primary" @click="filterView">
+              Filter &#9660;
+            </button>
+          </li>
+        </ul>
+      </div>
+    </nav>
     <movies-filter :get-search-id="getSearchId"></movies-filter>
-    <p class="h4">
-      Total results: <span class="num">{{ moviesResult.total_results }}</span>
-    </p>
-    <p class="h4">
-      Total pages: <span class="num">{{ moviesResult.total_pages }}</span>
-    </p>
-    <movies-list :movies-result="moviesResult"></movies-list>
+    <div class="results-info">
+      <p>
+        Total results: <span class="num">{{ moviesResult.total_results }}</span>
+      </p>
+      <p>
+        Total pages: <span class="num">{{ moviesResult.total_pages }}</span>
+      </p>
+      <p>
+        Current Page: <span class="num">{{ moviesResult.page }}</span>
+      </p>
+    </div>
 
     <nav class="pagination-block">
       <ul class="pagination">
@@ -16,12 +58,12 @@
           <button
             type="button"
             class="page-link"
-            @click="resultHandler(goPrev)"
+            @click="resultHandler(url, goPrev)"
           >
             Previous
           </button>
         </li>
-        <template v-if="totalPages < 70">
+        <template v-if="totalPages < 45">
           <li
             v-for="page in totalPages"
             :class="page == currentPage ? ' page-item active' : 'page-item'"
@@ -30,7 +72,7 @@
             <button
               type="button"
               class="page-link"
-              @click="resultHandler(page)"
+              @click="resultHandler(url, page)"
             >
               {{ page }}
             </button>
@@ -40,13 +82,15 @@
           <button
             type="button"
             class="page-link"
-            @click="resultHandler(goNext)"
+            @click="resultHandler(url, goNext)"
           >
             Next
           </button>
         </li>
       </ul>
     </nav>
+
+    <movies-list :movies-result="moviesResult"></movies-list>
   </div>
 </template>
 
@@ -61,11 +105,9 @@ export default {
   },
   data: () => ({
     moviesResult: {},
-    searchId: []
+    searchId: [],
+    url: "/discover/movie"
   }),
-  // mounted() {
-  //   this.
-  // },
   computed: {
     currentPage() {
       return this.moviesResult.page;
@@ -87,12 +129,13 @@ export default {
     }
   },
   methods: {
-    resultHandler(page) {
+    resultHandler(url, page, query, category) {
       axios
-        .get("/discover/movie", {
+        .get(url, {
           params: {
             with_genres: this.searchId.toString(),
-            page: page
+            page: page,
+            [query]: category
           }
         })
         .then(response => {
@@ -100,9 +143,31 @@ export default {
         })
         .catch(error => console.error(error));
     },
+    // getUpcoming() {
+    //   axios
+    //     .get("/movie/upcoming")
+    //     .then(response => {
+    //       this.moviesResult = response.data;
+    //     })
+    //     .catch(error => console.error(error));
+    // },
+    // getNowPlaying() {
+    //     axios
+    //     .get("/movie/now_playing")
+    //     .then(response => {
+    //       this.moviesResult = response.data;
+    //     })
+    //     .catch(error => console.error(error));
+    // },
     getSearchId(id) {
       this.searchId = id.searchId;
       this.resultHandler();
+    },
+    filterView() {
+      let filter = document.querySelector(".filter");
+      filter.classList.contains("hide-me")
+        ? filter.classList.remove("hide-me")
+        : filter.classList.add("hide-me");
     }
   }
 };
@@ -119,5 +184,25 @@ export default {
 .pagination-block {
   display: flex;
   justify-content: center;
+  margin: 30px;
+}
+
+.main-title {
+  padding: 30px;
+  color: white;
+}
+.filter-button {
+  align-self: flex-end;
+}
+.navbar {
+  display: flex;
+}
+
+.results-info {
+  width: 500px;
+  margin-top: 130px;
+  padding: 50px;
+  display: flex;
+  justify-content: space-around;
 }
 </style>
