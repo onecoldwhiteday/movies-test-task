@@ -74,4 +74,8 @@ export default {
   justify-content: flex-start;
   text-align: start;
 }
+.overview {
+  overflow: auto;
+  height: 250px;
+}
 </style>

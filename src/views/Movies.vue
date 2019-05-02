@@ -103,6 +103,7 @@
     </nav>
 
     <movies-list :movies-result="moviesResult"></movies-list>
+    <a href="#" title="Back on top" class="backToTop">Go to top &#9650;</a>
   </div>
 </template>
 
@@ -142,6 +143,9 @@ export default {
         : this.currentPage;
       return nextPage;
     }
+  },
+  mounted() {
+    this.resultHandler();
   },
   methods: {
     resultHandler(page) {
@@ -207,5 +211,20 @@ export default {
   padding: 50px;
   display: flex;
   justify-content: space-around;
+}
+.backToTop {
+  position: fixed;
+  display: block;
+  font-size: 1.5rem;
+  right: 50px;
+  bottom: 50px;
+  color: white;
+  opacity: 0.5;
+}
+
+.backToTop:hover {
+  color: white;
+  opacity: 1;
+  text-decoration: none;
 }
 </style>
