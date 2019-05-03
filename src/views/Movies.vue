@@ -77,21 +77,29 @@
             Previous
           </button>
         </li>
-        <template v-if="totalPages < 45">
-          <li
-            v-for="page in totalPages"
-            :class="page == currentPage ? ' page-item active' : 'page-item'"
-            :key="page"
-          >
-            <button
-              type="button"
-              class="page-link"
-              @click="resultHandler(page)"
-            >
-              {{ page }}
-            </button>
-          </li>
-        </template>
+        <li v-if="hasFirst()">
+          <button class="page-link" @click="resultHandler(1)">1</button>
+        </li>
+        <li v-if="hasFirst()">
+          <p class="page-link">...</p>
+        </li>
+        <li
+          v-for="page in pages"
+          :class="page == currentPage ? ' page-item active' : 'page-item'"
+          :key="page"
+        >
+          <button type="button" class="page-link" @click="resultHandler(page)">
+            {{ page }}
+          </button>
+        </li>
+        <li v-if="hasLast()">
+          <p class="page-link">...</p>
+        </li>
+        <li v-if="hasLast()">
+          <button class="page-link" @click="resultHandler(totalPages)">
+            {{ totalPages + "*" }}
+          </button>
+        </li>
         <li class="page-item">
           <button
             type="button"
@@ -103,6 +111,10 @@
         </li>
       </ul>
     </nav>
+    <p>
+      *MovieDB API provide only first 20,000 items(20 per page => 1000 pages)
+      for all the lists(popular, top rated etc)
+    </p>
 
     <movies-list :movies-result="moviesResult"></movies-list>
     <a href="#" title="Back on top" class="backToTop">Go to top &#9650;</a>
@@ -120,6 +132,7 @@ export default {
   },
   data: () => ({
     moviesResult: {},
+    pageRange: 3,
     searchQueries: {
       searchUrl: "discover/movie",
       sort_by: "",
@@ -128,23 +141,42 @@ export default {
     }
   }),
   computed: {
+    totalPages() {
+      let total =
+        this.moviesResult.total_pages >= 1000
+          ? 1000
+          : this.moviesResult.total_pages;
+      return total || 0;
+    },
+    pages() {
+      let pages = [];
+      for (let i = this.rangeStart; i <= this.rangeEnd; i++) {
+        pages.push(i);
+      }
+      console.log(pages.length);
+      return pages;
+    },
+    rangeStart() {
+      let start = this.currentPage - this.pageRange;
+      console.log(this.pageRange);
+      return start > 0 ? start : 1;
+    },
+    rangeEnd() {
+      let end = this.currentPage + this.pageRange;
+      return end < this.totalPages ? end : this.totalPages;
+    },
     currentPage() {
       return this.moviesResult.page;
     },
-    totalPages() {
-      return this.moviesResult.total_pages;
-    },
     goPrev() {
       let prevPage = this.currentPage - 1;
-      this.currentPage > 1 ? prevPage : this.currentPage;
-      return prevPage;
+      return this.currentPage > 1 ? prevPage : this.currentPage;
     },
     goNext() {
       let nextPage = this.currentPage + 1;
-      this.currentPage < this.moviesResult.totalPages
+      return this.currentPage < this.moviesResult.total_pages
         ? nextPage
         : this.currentPage;
-      return nextPage;
     }
   },
   mounted() {
@@ -183,6 +215,18 @@ export default {
     updateQueries(searchUrl, sort_by) {
       this.searchQueries.searchUrl = searchUrl;
       this.searchQueries.sort_by = sort_by;
+    },
+    hasFirst() {
+      return this.rangeStart !== 1;
+    },
+    hasLast() {
+      return this.rangeEnd < this.totalPages;
+    },
+    hasPrev() {
+      return this.currentPage > 1;
+    },
+    hasNext() {
+      return this.currentPage < this.totalPages;
     }
   }
 };
