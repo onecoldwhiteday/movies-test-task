@@ -73,6 +73,7 @@
             type="button"
             class="page-link"
             @click="resultHandler(goPrev)"
+            :disabled="!hasPrev()"
           >
             Previous
           </button>
@@ -105,6 +106,7 @@
             type="button"
             class="page-link"
             @click="resultHandler(goNext)"
+            :disabled="!hasNext()"
           >
             Next
           </button>
